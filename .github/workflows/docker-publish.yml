@@ -9,9 +9,6 @@ on:
   # Run tests for any PRs.
   pull_request:
 
-  schedule:
-    - cron: '15 */1 * * *'
-
 env:
   NOVNC_IMG: novnc
   BASE_DEVEL_IMG: base-devel
@@ -48,13 +45,13 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: blackarchlinux/blackarch:base-devel
-    if: github.event_name == 'push' || github.event_name == 'schedule'
+    if: github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v2
       
       - name: Install dependencies
-        run: sudo pacman -Sy --noconfirm make docker devtools fakeroot fakechroot
+        run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |
