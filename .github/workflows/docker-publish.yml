@@ -10,7 +10,7 @@ on:
   pull_request:
 
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '15 */1 * * *'
 
 env:
   NOVNC_IMG: novnc
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: blackarchlinux/blackarch:base-devel
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'schedule'
 
     steps:
       - uses: actions/checkout@v2
