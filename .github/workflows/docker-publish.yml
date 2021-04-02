@@ -24,7 +24,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: archlinux:base-devel
+      image: blackarchlinux/blackarch:base-devel
 
     steps:
       - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: archlinux:base-devel
+      image: blackarchlinux/blackarch:base-devel
     if: github.event_name == 'push'
 
     steps:
