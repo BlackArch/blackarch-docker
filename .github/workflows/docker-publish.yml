@@ -23,12 +23,15 @@ jobs:
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   test:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Run tests
         run: |
+          sudo pacman -Sy --noconfirm make docker devtools fakeroot fakechroot
           docker build ./blackarch-novnc --file Dockerfile
           make blackarch-base
           make blackarch-base-devel
@@ -40,10 +43,15 @@ jobs:
     needs: test
 
     runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
     if: github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        run: sudo pacman -Sy --noconfirm make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |
