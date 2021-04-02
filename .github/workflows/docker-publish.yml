@@ -1,0 +1,54 @@
+name: Docker
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+
+env:
+  NOVNC_IMG: novnc
+  BASE_DEVEL_IMG: base-devel
+  LATEST_IMG: latest
+  BASE_IMG: base
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    container:
+      image: blackarchlinux/blackarch:base-devel
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
+
+      - name: Build base
+        run: |
+          make blackarch-base 
+          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/ikstream/ba-docker:$BASE_IMG
+          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/ikstream/ba-docker:$LATEST_IMG
+        
+      - name: Build base-devel
+        run: |
+          make blackarch-base-devel
+          docker build ./output/ --file ./output/Dockerfile.blackarch-base-devel --tag docker.io/ikstream/ba-docker:$BASE_DEVEL_IMG
+
+      - name: Build novnc
+        run: |
+          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag docker.io/ikstream/ba-docker:$NOVNC_IMG
+          
+      - name: Log into registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          
+      - name: Push image
+        run: |
+          docker push docker.io/ikstream/ba-docker:$NOVNC_IMG
+          docker push docker.io/ikstream/ba-docker:$BASE_IMG
+          docker push docker.io/ikstream/ba-docker:$BASE_DEVEL_IMG
+          docker push docker.io/ikstream/ba-docker:$LATEST_IMG
