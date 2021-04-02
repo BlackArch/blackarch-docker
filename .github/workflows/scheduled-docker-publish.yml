@@ -2,7 +2,7 @@ name: Docker
 
 on:
   schedule:
-    - cron: '25 */1 * * *'
+    - cron: '0 */1 * * *'
 
 env:
   NOVNC_IMG: novnc
@@ -13,7 +13,7 @@ env:
 jobs:
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  publish:
     runs-on: ubuntu-latest
     container:
       image: blackarchlinux/blackarch:base-devel
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Install dependencies
-        run: sudo pacman -Sy --noconfirm make docker devtools fakeroot fakechroot
+        run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |
@@ -34,28 +34,35 @@ jobs:
         run: |
           make blackarch-base-devel
           docker build ./output/ --file ./output/Dockerfile.blackarch-base-devel --tag $BASE_DEVEL_IMG
+      
       - name: Build novnc
         run: |
           docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag $NOVNC_IMG
+
       - name: Log into registry
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
           echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      
       - name: Push image
         run: |
           NOVNC_ID=docker.pkg.github.com/${{ github.repository }}/$NOVNC_IMG
           BASE_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_IMG
           BASE_DEVEL_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_DEVEL_IMG
           LATEST_ID=docker.pkg.github.com/${{ github.repository }}/$LATEST_IMG
+          
           # Change all uppercase to lowercase
           NOVNC_ID=$(echo $NONVC_ID | tr '[A-Z]' '[a-z]')
           BASE_ID=$(echo $BASE_ID | tr '[A-Z]' '[a-z]')
           BASE_DEVEL_ID=$(echo $BASE_DEVEL_ID | tr '[A-Z]' '[a-z]')
           LATEST_ID=$(echo $LATEST_ID | tr '[A-Z]' '[a-z]')
+          
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
           echo NOVNC_ID=$NOVNC_ID
@@ -63,6 +70,7 @@ jobs:
           echo BASE_DEVEL_ID=$BASE_DEVEL_ID
           echo LATEST_ID=$LATEST_ID
           echo VERSION=$VERSION
+          
           docker tag $NOVNC_IMG $NOVNC_ID:$VERSION
           docker push $NOVNC_ID:$VERSION
           
