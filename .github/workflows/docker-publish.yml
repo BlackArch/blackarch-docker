@@ -34,6 +34,10 @@ jobs:
           sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
           make blackarch-base
           make blackarch-base-devel
+          docker build ./output/ --file Dockerfile.blackarch-base --tag $BASE_IMG
+          docker build ./output/ --file Dockerfile.blackarch-base-devel --tag $BASE_DEVEL_IMG
+          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag $NOVNC_IMG
+          
 
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
@@ -65,7 +69,7 @@ jobs:
 
       - name: Build novnc
         run: |
-          docker build ./blackarch-novnc --file Dockerfile --tag $NOVNC_IMG
+          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag $NOVNC_IMG
 
       - name: Log into registry
         run: |
