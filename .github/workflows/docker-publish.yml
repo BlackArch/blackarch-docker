@@ -69,16 +69,22 @@ jobs:
           docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag $NOVNC_IMG
 
       - name: Log into registry
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-          echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
       - name: Push image
         run: |
-          NOVNC_ID=docker.pkg.github.com/${{ github.repository }}/$NOVNC_IMG
-          BASE_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_IMG
-          BASE_DEVEL_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_DEVEL_IMG
-          LATEST_ID=docker.pkg.github.com/${{ github.repository }}/$LATEST_IMG
+          #NOVNC_ID=docker.pkg.github.com/${{ github.repository }}/$NOVNC_IMG
+          #BASE_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_IMG
+          #BASE_DEVEL_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_DEVEL_IMG
+          #LATEST_ID=docker.pkg.github.com/${{ github.repository }}/$LATEST_IMG
+
+          NOVNC_ID=docker.io/ikstream/ba-docker/$NOVNC_IMG
+          BASE_ID=docker.io/ikstream/ba-docker/$BASE_IMG
+          BASE_DEVEL_ID=docker.io/ikstream/ba-docker/$BASE_DEVEL_IMG
+          LATEST_ID=docker.io/ikstream/ba-docker/$LATEST_IMG
 
           # Change all uppercase to lowercase
           NOVNC_ID=$(echo $NONVC_ID | tr '[A-Z]' '[a-z]')
