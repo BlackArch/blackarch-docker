@@ -27,4 +27,4 @@ jobs:
           docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag $BASE_IMG
           docker build ./output/ --file ./output/Dockerfile.blackarch-base-devel --tag $BASE_DEVEL_IMG
           docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag $NOVNC_IMG
-          
+

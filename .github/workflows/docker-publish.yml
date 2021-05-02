@@ -21,34 +21,34 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Install dependencies
         run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |
-          make blackarch-base 
-          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/ikstream/ba-docker:$BASE_IMG
-          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/ikstream/ba-docker:$LATEST_IMG
-        
+          make blackarch-base
+          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/blackarchlinux/ba-docker:$BASE_IMG
+          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/blackarchlinux/ba-docker:$LATEST_IMG
+
       - name: Build base-devel
         run: |
           make blackarch-base-devel
-          docker build ./output/ --file ./output/Dockerfile.blackarch-base-devel --tag docker.io/ikstream/ba-docker:$BASE_DEVEL_IMG
+          docker build ./output/ --file ./output/Dockerfile.blackarch-base-devel --tag docker.io/blackarchlinux/ba-docker:$BASE_DEVEL_IMG
 
       - name: Build novnc
         run: |
-          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag docker.io/ikstream/ba-docker:$NOVNC_IMG
-          
+          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag docker.io/blackarchlinux/ba-docker:$NOVNC_IMG
+
       - name: Log into registry
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          
+
       - name: Push image
         run: |
-          docker push docker.io/ikstream/ba-docker:$NOVNC_IMG
-          docker push docker.io/ikstream/ba-docker:$BASE_IMG
-          docker push docker.io/ikstream/ba-docker:$BASE_DEVEL_IMG
-          docker push docker.io/ikstream/ba-docker:$LATEST_IMG
+          docker push docker.io/blackarchlinux/ba-docker:$NOVNC_IMG
+          docker push docker.io/blackarchlinux/ba-docker:$BASE_IMG
+          docker push docker.io/blackarchlinux/ba-docker:$BASE_DEVEL_IMG
+          docker push docker.io/blackarchlinux/ba-docker:$LATEST_IMG
