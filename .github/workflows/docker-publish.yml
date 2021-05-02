@@ -28,13 +28,13 @@ jobs:
       - name: Build base
         run: |
           make blackarch-base
-          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/blackarchlinux/blackarch:$BASE_IMG
-          docker build ./output/ --file ./output/Dockerfile.blackarch-base --tag docker.io/blackarchlinux/blackarch:$LATEST_IMG
+          docker tag blackarchlinux/blackarch:base docker.io/blackarchlinux/blackarch:$BASE_IMG
+          docker tag blackarchlinux/blackarch:base docker.io/blackarchlinux/blackarch:$LATEST_IMG
 
       - name: Build base-devel
         run: |
           make blackarch-base-devel
-          docker build ./output/ --file ./output/Dockerfile.blackarch-base-devel --tag docker.io/blackarchlinux/blackarch:$BASE_DEVEL_IMG
+          docker tag blackarchlinux/blackarch:base-devel docker.io/blackarchlinux/blackarch:$BASE_DEVEL_IMG
 
       - name: Build novnc
         run: |
