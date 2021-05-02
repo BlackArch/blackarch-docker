@@ -1,0 +1,54 @@
+name: Docker
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - master
+
+env:
+  NOVNC_IMG: novnc
+  BASE_DEVEL_IMG: base-devel
+  LATEST_IMG: latest
+  BASE_IMG: base
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    container:
+      image: blackarchlinux/blackarch:base-devel
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
+
+      - name: Build base
+        run: |
+          make blackarch-base
+          docker tag blackarchlinux/blackarch:base docker.io/blackarchlinux/blackarch:$BASE_IMG
+          docker tag blackarchlinux/blackarch:base docker.io/blackarchlinux/blackarch:$LATEST_IMG
+
+      - name: Build base-devel
+        run: |
+          make blackarch-base-devel
+          docker tag blackarchlinux/blackarch:base-devel docker.io/blackarchlinux/blackarch:$BASE_DEVEL_IMG
+
+      - name: Build novnc
+        run: |
+          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag docker.io/blackarchlinux/blackarch:$NOVNC_IMG
+
+      - name: Log into registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Push image
+        run: |
+          docker push docker.io/blackarchlinux/blackarch:$NOVNC_IMG
+          docker push docker.io/blackarchlinux/blackarch:$BASE_IMG
+          docker push docker.io/blackarchlinux/blackarch:$BASE_DEVEL_IMG
+          docker push docker.io/blackarchlinux/blackarch:$LATEST_IMG

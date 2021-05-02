@@ -1,0 +1,22 @@
+name: Docker-PR
+
+on:
+  # Run tests for any PRs.
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: blackarchlinux/blackarch:base-devel
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        run: |
+          sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
+          make blackarch-base
+          make blackarch-base-devel
+          docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile
+
