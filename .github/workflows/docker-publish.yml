@@ -50,6 +50,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: Log into registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      
       - name: Install dependencies
         run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
 
@@ -68,30 +74,10 @@ jobs:
         run: |
           docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile --tag $NOVNC_IMG
 
-      - name: Log into registry
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
           
       - name: Push image
         run: |
-          #NOVNC_ID=docker.pkg.github.com/${{ github.repository }}/$NOVNC_IMG
-          #BASE_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_IMG
-          #BASE_DEVEL_ID=docker.pkg.github.com/${{ github.repository }}/$BASE_DEVEL_IMG
-          #LATEST_ID=docker.pkg.github.com/${{ github.repository }}/$LATEST_IMG
-
-          NOVNC_ID=docker.io/ikstream/ba-docker/$NOVNC_IMG
-          BASE_ID=docker.io/ikstream/ba-docker/$BASE_IMG
-          BASE_DEVEL_ID=docker.io/ikstream/ba-docker/$BASE_DEVEL_IMG
-          LATEST_ID=docker.io/ikstream/ba-docker/$LATEST_IMG
-
-          # Change all uppercase to lowercase
-          #NOVNC_ID=$(echo $NONVC_ID | tr '[A-Z]' '[a-z]')
-          #BASE_ID=$(echo $BASE_ID | tr '[A-Z]' '[a-z]')
-          #BASE_DEVEL_ID=$(echo $BASE_DEVEL_ID | tr '[A-Z]' '[a-z]')
-          #LATEST_ID=$(echo $LATEST_ID | tr '[A-Z]' '[a-z]')
-
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
@@ -99,13 +85,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
           # Use Docker `latest` tag convention
-          # [ "$VERSION" == "master" ] && VERSION=latest
-
-          echo NOVNC_ID=$NOVNC_ID
-          echo BASE_ID=$BASE_ID
-          echo BASE_DEVEL_ID=$BASE_DEVEL_ID
-          echo LATEST_ID=$LATEST_ID
-          echo VERSION=$VERSION
+          [ "$VERSION" == "master" ] && VERSION=latest
 
           docker tag $NOVNC_IMG $NOVNC_IMG:$VERSION
           docker push $NOVNC_IMG:$VERSION
