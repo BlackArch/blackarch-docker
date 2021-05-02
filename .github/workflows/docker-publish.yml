@@ -87,10 +87,10 @@ jobs:
           LATEST_ID=docker.io/ikstream/ba-docker/$LATEST_IMG
 
           # Change all uppercase to lowercase
-          NOVNC_ID=$(echo $NONVC_ID | tr '[A-Z]' '[a-z]')
-          BASE_ID=$(echo $BASE_ID | tr '[A-Z]' '[a-z]')
-          BASE_DEVEL_ID=$(echo $BASE_DEVEL_ID | tr '[A-Z]' '[a-z]')
-          LATEST_ID=$(echo $LATEST_ID | tr '[A-Z]' '[a-z]')
+          #NOVNC_ID=$(echo $NONVC_ID | tr '[A-Z]' '[a-z]')
+          #BASE_ID=$(echo $BASE_ID | tr '[A-Z]' '[a-z]')
+          #BASE_DEVEL_ID=$(echo $BASE_DEVEL_ID | tr '[A-Z]' '[a-z]')
+          #LATEST_ID=$(echo $LATEST_ID | tr '[A-Z]' '[a-z]')
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
@@ -99,7 +99,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
           # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
+          # [ "$VERSION" == "master" ] && VERSION=latest
 
           echo NOVNC_ID=$NOVNC_ID
           echo BASE_ID=$BASE_ID
@@ -107,14 +107,14 @@ jobs:
           echo LATEST_ID=$LATEST_ID
           echo VERSION=$VERSION
 
-          docker tag $NOVNC_IMG $NOVNC_ID:$VERSION
-          docker push $NOVNC_ID:$VERSION
+          docker tag $NOVNC_IMG $NOVNC_IMG:$VERSION
+          docker push $NOVNC_IMG:$VERSION
           
-          docker tag $BASE_IMG $BASE_ID:$VERSION
-          docker push $BASE_ID:$VERSION
+          docker tag $BASE_IMG $BASE_IMG:$VERSION
+          docker push $BASE_NAME:$VERSION
           
-          docker tag $BASE_DEVEL_IMG $BASE_DEVEL_ID:$VERSION
-          docker push $BASE_DEVEL_ID:$VERSION
+          docker tag $BASE_DEVEL_IMG $BASE_DEVEL_IMG:$VERSION
+          docker push $BASE_DEVEL_IMG:$VERSION
           
-          docker tag $LATEST_IMG $LATEST_ID:$VERSION
-          docker push $LATEST_ID:$VERSION
+          docker tag $LATEST_IMG $LATEST_IMG:$VERSION
+          docker push $LATEST_IMG:$VERSION
