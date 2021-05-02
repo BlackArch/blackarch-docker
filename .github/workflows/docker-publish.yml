@@ -77,6 +77,6 @@ jobs:
       - name: Push image
         run: |
           docker push docker.io/ikstream/ba-docker:$NOVNC_IMG
-          docker push docker.io/ikstream/ba-docker:$BASE_NAME
+          docker push docker.io/ikstream/ba-docker:$BASE_IMG
           docker push docker.io/ikstream/ba-docker:$BASE_DEVEL_IMG
           docker push docker.io/ikstream/ba-docker:$LATEST_IMG
