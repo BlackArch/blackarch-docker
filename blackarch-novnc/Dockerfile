@@ -20,7 +20,9 @@ RUN pacman -Syu --noconfirm make && \
 # Point wallpaper to the right files
     sed -i 's/backgrounds\/blackarch.png/blackarch\/wallpaper.png/g' /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml && \
 # Copy BlackArch configs
-    cp -r /etc/skel/. /root/.
+    cp -r /etc/skel/. /root/. && \
+    echo 'root:blackarch' | chpasswd && \
+    echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 
 # Expose needed ports
 EXPOSE 22/tcp
