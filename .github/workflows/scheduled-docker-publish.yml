@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
+        run: sudo pacman -Syy --noconfirm --needed make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |

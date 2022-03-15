@@ -15,7 +15,7 @@ jobs:
 
       - name: Run tests
         run: |
-          sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
+          sudo pacman -Syy --noconfirm --needed make docker devtools fakeroot fakechroot
           make blackarch-base
           make blackarch-base-devel
           docker build ./blackarch-novnc --file ./blackarch-novnc/Dockerfile
