@@ -1,4 +1,4 @@
-name: Docker
+name: Scheduled Publish
 
 on:
   schedule:
