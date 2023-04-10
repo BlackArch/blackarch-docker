@@ -14,13 +14,14 @@ FROM blackarchlinux/blackarch:latest
 # hostapd-wpe needs make, but it's not a dep because it's assumed to be installed despite not being a dep
 RUN pacman -Syu --noconfirm make && \
     # Install packages
-    pacman -Syu --noconfirm openssh vim tmux screen supervisor iw man mlocate pciutils less bash-completion novnc \
+    pacman -Syu --noconfirm openssh git vim tmux screen supervisor iw man mlocate pciutils less bash-completion novnc \
     xorg-server-xvfb x11vnc xfce4 xfce4-goodies xfce4-power-manager blackarch-config-xfce blackarch-menus blackarch-wallpaper \
     blackarch-config-cursor blackarch-config-icons blackarch-config-zsh ttf-liberation && \
 # Point wallpaper to the right files
     sed -i 's/backgrounds\/blackarch.png/blackarch\/wallpaper.png/g' /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml && \
 # Copy BlackArch configs
     cp -r /etc/skel/. /root/. && \
+    rm -f /usr/bin/websockify && \
     echo 'root:blackarch' | chpasswd && \
     echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 
