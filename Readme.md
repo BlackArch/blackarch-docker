@@ -5,7 +5,7 @@
 Official BlackArch Linux docker images. If you find a problem, please report it [here](https://github.com/BlackArch/blackarch-docker).
 
 * **Maintainers:** BlackArch Linux developer [Stefan Venz](https://github.com/ikstream).
-* **Support:** IRC  [irc://irc.blackarch.org:1337/blackarch](irc://irc.blackarch.org:1337/blackarch).
+* **Support:** [Matrix](https://matrix.to/#/#BlackArch:matrix.org).
 
 ## What is BlackArch?
 
