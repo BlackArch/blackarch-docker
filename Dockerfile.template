@@ -2,8 +2,6 @@ FROM scratch
 ADD TEMPLATE_ROOTFS_FILE /
 ENV LANG=en_US.UTF-8
 # Ensure keys are up to date
-RUN rm -rf /etc/pacman.d/gnupg && \
-    pacman-key --init && \
-    pacman-key --populate archlinux && \
-    pacman-key --update --keyserver kerserver.ubuntu.com
+RUN pacman-key --init && \
+    pacman -Syu --noconfirm archlinux-keyring
 CMD ["/usr/bin/bash"]
