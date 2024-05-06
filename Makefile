@@ -9,9 +9,10 @@ define rootfs
 	install -Dm644 /usr/share/devtools/pacman.conf.d/extra.conf $(BUILDDIR)/etc/pacman.conf
 	cat pacman-conf.d-blackarch.conf >> $(BUILDDIR)/etc/pacman.conf
 
-	fakechroot -- fakeroot -- pacman -Sy -r $(BUILDDIR) --needed \
+	fakechroot -- fakeroot -- pacman -Syu -r $(BUILDDIR) --needed \
 		--noconfirm --dbpath $(BUILDDIR)/var/lib/pacman \
 		--config $(BUILDDIR)/etc/pacman.conf \
+		--sysroot $(BUILDDIR) \
 		--noscriptlet \
 		--hookdir $(BUILDDIR)/alpm-hooks/usr/share/libalpm/hooks/ $(2)
 
