@@ -12,7 +12,6 @@ define rootfs
 	fakechroot -- fakeroot -- pacman -Syu -r $(BUILDDIR) --needed \
 		--noconfirm --dbpath $(BUILDDIR)/var/lib/pacman \
 		--config $(BUILDDIR)/etc/pacman.conf \
-		--sysroot $(BUILDDIR) \
 		--noscriptlet \
 		--hookdir $(BUILDDIR)/alpm-hooks/usr/share/libalpm/hooks/ $(2)
 
