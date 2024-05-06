@@ -23,7 +23,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo pacman -Sy --noconfirm archlinux-keyring blackarch-keyring && sudo pacman -S --noconfirm --needed make docker devtools fakeroot fakechroot
+        run: |
+             sudo pacman-key --init && \
+             sudo pacman-key --populate archlinux blackarch && \
+             sudo pacman -Sy --noconfirm --needed archlinux-keyring blackarch-keyring && \
+             sudo pacman -Sy --noconfirm --needed make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |
