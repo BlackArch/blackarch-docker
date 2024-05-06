@@ -27,7 +27,7 @@ jobs:
              sudo pacman-key --init && \
              sudo pacman-key --populate archlinux blackarch && \
              sudo pacman -Sy --noconfirm --needed archlinux-keyring blackarch-keyring && \
-             sudo pacman -S --noconfirm --needed make docker devtools fakeroot fakechroot
+             sudo pacman -Syu --noconfirm --needed make docker devtools fakeroot fakechroot
 
       - name: Build base
         run: |
