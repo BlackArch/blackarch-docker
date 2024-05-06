@@ -9,20 +9,19 @@ define rootfs
 	install -Dm644 /usr/share/devtools/pacman.conf.d/extra.conf $(BUILDDIR)/etc/pacman.conf
 	cat pacman-conf.d-blackarch.conf >> $(BUILDDIR)/etc/pacman.conf
 
-	fakechroot -- fakeroot -- pacman -Syu -r $(BUILDDIR) --needed \
+	sed 's/Include = /&rootfs/g' < $(BUILDDIR)/etc/pacman.conf > pacman.conf
+	cp --recursive --preserve=timestamps --backup --suffix=.pacnew rootfs/* $(BUILDDIR)/
+
+	fakechroot -- fakeroot -- pacman -Sy -r $(BUILDDIR) \
 		--noconfirm --dbpath $(BUILDDIR)/var/lib/pacman \
-		--config $(BUILDDIR)/etc/pacman.conf \
+		--config pacman.conf \
 		--noscriptlet \
 		--hookdir $(BUILDDIR)/alpm-hooks/usr/share/libalpm/hooks/ $(2)
-
-	cp --recursive --preserve=timestamps --backup --suffix=.pacnew rootfs/* $(BUILDDIR)/
 
   fakechroot -- fakeroot -- chroot $(BUILDDIR) update-ca-trust
 	fakechroot -- fakeroot -- chroot $(BUILDDIR) locale-gen
 	fakechroot -- fakeroot -- chroot $(BUILDDIR) sh -c 'pacman-key --init && pacman-key --populate archlinux blackarch && bash -c "rm -rf etc/pacman.d/gnupg/{openpgp-revocs.d/,private-keys-v1.d/,pubring.gpg~,gnupg.S.}*"'
   echo 'allow-weak-key-signatures' >> $(BUILDDIR)/etc/pacman.d/gnupg/gpg.conf
-
-	ln -fs /etc/os-release $(BUILDDIR)/usr/lib/os-release
 
 	# add system users
 	fakechroot -- fakeroot -- chroot $(BUILDDIR) /usr/bin/systemd-sysusers --root "/"
@@ -36,11 +35,11 @@ define rootfs
 	# fakeroot to map the gid/uid of the builder process to root
 	fakeroot -- tar --numeric-owner --xattrs --acls --exclude-from=exclude -C $(BUILDDIR) -c . -f $(OUTPUTDIR)/$(1).tar
 
-	cd $(OUTPUTDIR); xz -9 -T0 -f $(1).tar; sha256sum $(1).tar.xz > $(1).tar.xz.SHA256
+	cd $(OUTPUTDIR); zstd --long -T0 -8 $(1).tar; sha256sum $(1).tar.zst > $(1).tar.zst.SHA256
 endef
 
 define dockerfile
-	sed -e "s|TEMPLATE_ROOTFS_FILE|$(1).tar.xz|" \
+	sed -e "s|TEMPLATE_ROOTFS_FILE|$(1).tar.zst|" \
 	    Dockerfile.template > $(OUTPUTDIR)/Dockerfile.$(1)
 endef
 
