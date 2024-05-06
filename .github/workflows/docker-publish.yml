@@ -16,7 +16,7 @@ jobs:
   push:
     runs-on: ubuntu-latest
     container:
-      image: blackarchlinux/blackarch:base-devel
+      image: docker.io/blackarchlinux/blackarch:base-devel
     if: github.event_name == 'push'
 
     steps:

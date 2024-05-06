@@ -17,7 +17,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     container:
-      image: blackarchlinux/blackarch:base-devel
+      image: docker.io/blackarchlinux/blackarch:base-devel
 
     steps:
       - uses: actions/checkout@v3

@@ -9,7 +9,7 @@ define rootfs
 	install -Dm644 /usr/share/devtools/pacman.conf.d/extra.conf $(BUILDDIR)/etc/pacman.conf
 	cat pacman-conf.d-blackarch.conf >> $(BUILDDIR)/etc/pacman.conf
 
-	fakechroot -- fakeroot -- pacman -Sy -r $(BUILDDIR) \
+	fakechroot -- fakeroot -- pacman -Sy -r $(BUILDDIR) --needed \
 		--noconfirm --dbpath $(BUILDDIR)/var/lib/pacman \
 		--config $(BUILDDIR)/etc/pacman.conf \
 		--noscriptlet \
