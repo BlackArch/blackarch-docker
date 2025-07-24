@@ -9,6 +9,8 @@ define rootfs
 	install -Dm644 /usr/share/devtools/pacman.conf.d/extra.conf $(BUILDDIR)/etc/pacman.conf
 	cat pacman-conf.d-blackarch.conf >> $(BUILDDIR)/etc/pacman.conf
 
+	sed -i 's/#DisableSandbox/DisableSandbox/' "${BUILDDIR}/etc/pacman.conf"
+
 	sed 's/Include = /&rootfs/g' < $(BUILDDIR)/etc/pacman.conf > pacman.conf
 	cp --recursive --preserve=timestamps --backup --suffix=.pacnew rootfs/* $(BUILDDIR)/
 
