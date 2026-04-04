@@ -11,7 +11,7 @@ jobs:
       image: blackarchlinux/blackarch:base-devel
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Run tests
         run: |
